@@ -29,7 +29,7 @@ If you’re stumbling on this page, you’re probably looking for this feature. 
 
 ### 🤝 Contributing
 
-Contributions, issues, and feature requests are welcome! Feel free to check [issues page](#) or submit a pull request. Let's make this tool even better together! 💡🐙
+Contributions, issues, and feature requests are welcome! Feel free to check [issues page](https://github.com/angelicadvocate/CWA-Ingest-Buddy/issues) or submit a pull request. Let's make this tool even better together! 💡🐙
 
 ---
 
