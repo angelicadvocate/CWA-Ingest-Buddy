@@ -6,10 +6,10 @@
 
 ### 🔧 What it does
 
-- Moves files from your “books” folder to temporary folders to protect your originals. 📂➡️🗂️  
-- Checks for duplicate file names and matching hash values. 🔍✅  
-- Truncates and formats file names for better compatibility with CWA’s ingest workflow. ✂️📝  
-- Safely moves prepared files into the “ingest” folder for CWA to process. 🚚📥  
+- Moves files from your “My-Books” folder to temporary folders to protect your originals. 📂➡️🗂️
+- Checks for duplicate file names and matching hash values. 🔍✅
+- Truncates and formats file names for better compatibility with CWA’s ingest workflow. ✂️📝
+- Safely moves prepared files into the “ingest” folder for CWA to process. 🚚📥
 
 This helps you maintain a clean and organized library while working within the limitations of the Calibre book processor.
 
