@@ -1,5 +1,12 @@
 #!/bin/bash
 
+if [[ $EUID -ne 0 ]]; then
+  echo "This script must be run as root or with sudo."
+  echo "Please try again with sudo or as root."
+  sleep 2
+  exit 1
+fi
+
 CONFIG_FILE="config.cfg"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
@@ -36,6 +43,12 @@ if [ -d "$ingest_path" ]; then
   done
 
   if [[ "$alert_choice" =~ ^[Yy]$ ]]; then
+      echo "Installing SMTP client (e.g. msmtp)..."
+      apt-get update && apt-get install -y msmtp || {
+        echo "Failed to install msmtp. Please install it manually."
+        exit 1
+      }
+      echo "SMTP client installed."
       read -rp "Enter the recipient email address for alerts: " alert_email
       read -rp "Enter the sender email address (SMTP user): " smtp_email
       read -rsp "Enter the SMTP password (input hidden): " smtp_password
@@ -65,10 +78,10 @@ else
 fi
 
 # Make sure main scripts are executable
-chmod +x "$SCRIPT_DIR/namecheck.sh"
-chmod +x "$SCRIPT_DIR/hashcheck.sh"
-chmod +x "$SCRIPT_DIR/deduplication.sh"
-chmod +x "$SCRIPT_DIR/email-notify.sh"
+chmod +x "$SCRIPT_DIR/scripts/namecheck.sh"
+chmod +x "$SCRIPT_DIR/scripts/hashcheck.sh"
+chmod +x "$SCRIPT_DIR/scripts/deduplication.sh"
+chmod +x "$SCRIPT_DIR/scripts/email-notify.sh"
 
 echo "Scripts have been made executable!"
 
@@ -102,7 +115,7 @@ if [[ "$cron_choice" =~ ^[Yy]$ ]]; then
     cron_schedule="*/$interval * * * *"
 
     # Add the cron job
-    (crontab -l 2>/dev/null; echo "$cron_schedule $SCRIPT_PATH") | crontab -
+    (crontab -l 2>/dev/null; echo "$cron_schedule $SCRIPT_DIR/scripts/namecheck.sh") | crontab -
 
     echo "Cron job set to run every $interval minutes!"
 else
@@ -144,7 +157,7 @@ if [[ "$cron_choice" =~ ^[Yy]$ ]]; then
     # Build the cron schedule to run every $days_interval days at specified time
     cron_schedule="$minute $hour */$days_interval * *"
 
-    (crontab -l 2>/dev/null; echo "$cron_schedule $SCRIPT_DIR/email-notify.sh") | crontab -
+    (crontab -l 2>/dev/null; echo "$cron_schedule $SCRIPT_DIR/scripts/email-notify.sh") | crontab -
 
     echo "Cron job set to run every $days_interval days at $hour:$minute!"
 else

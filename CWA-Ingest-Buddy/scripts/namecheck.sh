@@ -1,10 +1,10 @@
 #!/bin/bash
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-SOURCE_DIR="$(dirname "$SCRIPT_DIR")/My-Books"
-DEST_DIR="$SCRIPT_DIR/staging-hashcheck"
-PROCESSED_LOG="$SCRIPT_DIR/processed-files.log"
-NAMECHECK_LOG="$SCRIPT_DIR/namecheck.log"
+SOURCE_DIR="$(cd "$SCRIPT_DIR/../../My-Books" && pwd)"
+DEST_DIR="$SCRIPT_DIR/../staging-hashcheck"
+PROCESSED_LOG="$SCRIPT_DIR/../log-files/processed-files.log"
+NAMECHECK_LOG="$SCRIPT_DIR/../log-files/namecheck.log"
 
 # Ensure log files exist
 touch "$PROCESSED_LOG"
@@ -28,11 +28,13 @@ is_processed() {
 for file_path in "$SOURCE_DIR"/*; do
     file_name=$(basename "$file_path")
 
-    # Exclude specific files/folders
-    if [[ "$file_name" == ".calnotes" || "$file_name" == ".stfolder" || "$file_name" == "metadata.db" ]]; then
-        echo "Skipping $file_name"
-        continue
-    fi
+    # Exclude specific files/folders and partially downloaded files
+    case "$file_name" in
+        ".calnotes"|".stfolder"|"metadata.db"|*.part|*.crdownload|*.tmp)
+            echo "Skipping $file_name"
+            continue
+            ;;
+    esac
 
     if is_processed "$file_name"; then
         echo "Skipping already copied file: $file_name"
@@ -80,8 +82,6 @@ for FILE in "$DIR"/*; do
         echo "Renamed: $FILENAME to $NEW_FILENAME"
     fi
 done
-
-sleep 30
 
 # Call the next script: hashcheck.sh
 "$SCRIPT_DIR/hashcheck.sh"

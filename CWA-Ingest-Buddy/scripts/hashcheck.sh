@@ -1,14 +1,19 @@
 #!/bin/bash
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-SOURCE_DIR="$SCRIPT_DIR/staging-hashcheck"
-DEST_DIR="$SCRIPT_DIR/staging-deduplication"
-LOG_FILE="$SCRIPT_DIR/hashcheck-names.log"
-HASH_FILE="$SCRIPT_DIR/hashcheck-hashes.log"
+SOURCE_DIR="$SCRIPT_DIR/../staging-hashcheck"
+DEST_DIR="$SCRIPT_DIR/../staging-deduplication"
+LOG_FILE="$SCRIPT_DIR/../log-files/hashcheck-names.log"
+HASH_FILE="$SCRIPT_DIR/../log-files/hashcheck-hashes.log"
 
 # Ensure log files exist
 touch "$LOG_FILE"
 touch "$HASH_FILE"
+
+if [ -z "$(ls -A "$SOURCE_DIR" 2>/dev/null)" ]; then
+  echo "No files to process in $SOURCE_DIR, exiting."
+  exit 0
+fi
 
 # Read logged file names and hashes into arrays
 mapfile -t logged_files < "$LOG_FILE"
@@ -71,6 +76,6 @@ for file_path in "$SOURCE_DIR"/*; do
         echo "Failed to move: $file_name"
     fi
 
-"$SCRIPT_DIR/deduplication.sh"
-
 done
+
+"$SCRIPT_DIR/deduplication.sh"

@@ -1,6 +1,6 @@
 # 🚀 CWA-Ingest-Buddy
 
-**CWA-Ingest-Buddy** is a helper script for Calibre-Web-Automated (CWA) that sorts, formats, and deduplicates files before they are ingested. It ensures your original book files remain untouched while preparing them for seamless ingestion into your Calibre Web library. 📚✨
+**CWA-Ingest-Buddy** is a helper script for Calibre-Web-Automated (CWA) that sorts, truncates file names, and deduplicates files before they are ingested. It ensures your original book files remain untouched while preparing them for seamless ingestion into your Calibre Web library. 📚✨
 
 ---
 
