@@ -34,6 +34,7 @@ Then navigate to the internal `CWA-Ingest-Buddy` folder and be sure to read the 
 **NOTE:** Currently the deduplication check is not complete. The script in its current form checks for duplicate names and matching hash values. Additional functionality is planned to match file contents but has not been implemented yet. Feel free to use it in its current form if you wish to do so. 🛠️⌛
 
 **NOTE:** Currently the notifications are handled by setting up an email with msmtp. If you answer yes to setup the email notifications in the setup process then msmtp will be installed automatically for you. If you do not wish to use this feature or have a dependency installed be sure to answer no in the first-run.sh setup script.
+
 ---
 
 ### 🤝 Contributing
