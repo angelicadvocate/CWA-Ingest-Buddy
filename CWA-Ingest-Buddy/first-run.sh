@@ -35,7 +35,7 @@ if [ -d "$ingest_path" ]; then
   # Ask about alerting
   read -rp "Do you want to set up email alerts for files hung in the ingest process? (y/n): " alert_choice
 
-  # Remove existing alert-related lines if present
+  # Remove existing alert-related lines if present (always clean first)
   for var in ALERT_EMAIL SMTP_EMAIL SMTP_PASSWORD SMTP_HOST SMTP_PORT; do
     if grep -q "^$var=" "$CONFIG_FILE" 2>/dev/null; then
       sed -i "/^$var=/d" "$CONFIG_FILE"
@@ -67,9 +67,12 @@ if [ -d "$ingest_path" ]; then
       echo "Alert settings saved."
   else
       echo "Skipping alerting setup."
+      # Since user declined email alerts, remove any existing email notification cron job
+      # Remove line with email-notify.sh from current crontab (if any)
+      crontab -l 2>/dev/null | grep -v 'email-notify.sh' | crontab -
+      echo "Removed any existing email notification cron jobs."
   fi
 
-  echo "Setup complete. You're ready to go!"
 else
   echo "Error: The path \"$ingest_path\" does not exist or is not a directory."
   echo "Please check the path and try again."
@@ -86,7 +89,7 @@ chmod +x "$SCRIPT_DIR/scripts/email-notify.sh"
 echo "Scripts have been made executable!"
 
 # CWA-Ingest-Buddy Crontab Setup
-SCRIPT_PATH="$SCRIPT_DIR/namecheck.sh"
+SCRIPT_PATH="$SCRIPT_DIR/scripts/namecheck.sh"
 
 echo "Would you like to set up a cron job to run the main script automatically?"
 read -rp "Enter Y to proceed, or N to skip: " cron_choice
@@ -111,15 +114,21 @@ if [[ "$cron_choice" =~ ^[Yy]$ ]]; then
         break
     done
 
+    # Remove any existing cron job for namecheck.sh to avoid duplicates
+    crontab -l 2>/dev/null | grep -v 'namecheck.sh' | crontab -
+
     # Build the cron schedule
     cron_schedule="*/$interval * * * *"
 
     # Add the cron job
-    (crontab -l 2>/dev/null; echo "$cron_schedule $SCRIPT_DIR/scripts/namecheck.sh") | crontab -
+    (crontab -l 2>/dev/null; echo "$cron_schedule $SCRIPT_PATH") | crontab -
 
     echo "Cron job set to run every $interval minutes!"
 else
     echo "Skipping main script cron setup."
+    # Optional: Remove any existing cron job for namecheck.sh if user does not want it
+    crontab -l 2>/dev/null | grep -v 'namecheck.sh' | crontab -
+    echo "Removed any existing main script cron jobs."
 fi
 
 # Email Notification Cron Setup
@@ -154,6 +163,9 @@ if [[ "$cron_choice" =~ ^[Yy]$ ]]; then
         break
     done
 
+    # Remove existing email-notify.sh cron job to avoid duplicates
+    crontab -l 2>/dev/null | grep -v 'email-notify.sh' | crontab -
+
     # Build the cron schedule to run every $days_interval days at specified time
     cron_schedule="$minute $hour */$days_interval * *"
 
@@ -162,6 +174,9 @@ if [[ "$cron_choice" =~ ^[Yy]$ ]]; then
     echo "Cron job set to run every $days_interval days at $hour:$minute!"
 else
     echo "Skipping email notification cron setup."
+    # Remove any existing email-notify.sh cron job
+    crontab -l 2>/dev/null | grep -v 'email-notify.sh' | crontab -
+    echo "Removed any existing email notification cron jobs."
 fi
 
 # Closing messages
