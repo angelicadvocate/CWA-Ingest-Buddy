@@ -35,6 +35,8 @@ Then navigate to the internal `CWA-Ingest-Buddy` folder and be sure to read the 
 
 **NOTE:** Currently the notifications are handled by setting up an email with msmtp. If you answer yes to setup the email notifications in the setup process then msmtp will be installed automatically for you. If you do not wish to use this feature or have a dependency installed be sure to answer no in the first-run.sh setup script.
 
+**NOTE:** This project is currently being migrated from Bash to Python to enable new features and improve maintainability. For now, some functionality exists in both languages, and the Bash scripts remain the default. Once the Python migration is complete and fully tested, the Bash scripts will be removed and the setup instructions will be updated.
+
 ---
 
 ### 🤝 Contributing

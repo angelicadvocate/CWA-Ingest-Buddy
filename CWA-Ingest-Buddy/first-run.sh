@@ -88,6 +88,13 @@ chmod +x "$SCRIPT_DIR/scripts/email-notify.sh"
 
 echo "Scripts have been made executable!"
 
+# Create directories for staging directories if they don't exist
+mkdir -p "$SCRIPT_DIR/staging-hashcheck"
+mkdir -p "$SCRIPT_DIR/staging-deduplication"
+mkdir -p "$SCRIPT_DIR/staging-namecheck"
+
+echo "Staging directories created!"
+
 # CWA-Ingest-Buddy Crontab Setup
 SCRIPT_PATH="$SCRIPT_DIR/scripts/namecheck.sh"
 
