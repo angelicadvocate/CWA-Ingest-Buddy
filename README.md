@@ -23,7 +23,15 @@ Many users want to keep their original book files intact, but CWA’s ingest fea
 
 ### ⚙️ Usage
 
-If you’re stumbling on this page, you’re probably looking for this feature. While this project is still in beta, usage instructions are not yet provided. Feel free to download and modify the files directly. Once the project is complete, setup instructions will be added here. 🛠️⌛
+To download this repository to your local machine, navigate to the folder where you’d like to set it up and run:
+
+```bash
+git clone https://github.com/angelicadvocate/CWA-Ingest-Buddy.git
+```
+
+Then navigate to the internal `CWA-Ingest-Buddy` folder and be sure to read the `README.txt` there for setup instructions.
+
+**NOTE:** Currently the deduplication check is not complete. The script in its current form checks for duplicate names and matching hash values. Additional functionality is planned to match file contents but has not been implemented yet. Feel free to use it in its current form if you wish to do so. 🛠️⌛
 
 ---
 
