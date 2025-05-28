@@ -9,10 +9,11 @@ SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 SOURCE_DIR = os.path.abspath(os.path.join(SCRIPT_DIR, "../../My-Books"))
 CONFIG_FILE = os.path.abspath(os.path.join(SCRIPT_DIR, "../config.cfg"))
 DB_PATH = os.path.abspath(os.path.join(SCRIPT_DIR, "../log-files/cwa-ingest-buddy.db"))
+FAILURE_LOG = os.path.abspath(os.path.join(SCRIPT_DIR, "../log-files/failures.log"))
 MAX_LENGTH = 150
 
 EXCLUDE_FILES = {".calnotes", ".stfolder", "metadata.db"}
-EXCLUDE_EXTS = {".part", ".crdownload", ".tmp"}
+EXCLUDE_EXTS = {".part", ".crdownload", ".tmp", ".txt", ".log", ".bak", ".old"}
 
 def get_ingest_path():
     with open(CONFIG_FILE, 'r') as f:
@@ -52,6 +53,10 @@ def should_skip(filename):
             return True
     return False
 
+def log_failure(message):
+    with open(FAILURE_LOG, "a") as f:
+        f.write(f"{message}\n")
+
 def main():
     DEST_DIR = get_ingest_path()
     os.makedirs(DEST_DIR, exist_ok=True)
@@ -79,6 +84,8 @@ def main():
             filehash = ?
         """, (filename, filename, file_hash))
         if cursor.fetchone():
+            message = f"{filename} - potential duplicate found - hash or name already in database"
+            log_failure(message)
             print(f"Skipping already processed file: {filename}")
             continue
 
@@ -97,6 +104,8 @@ def main():
             """, (filename, truncated, file_hash))
             conn.commit()
         except Exception as e:
+            message = f"{filename} - copy failed - {e}"
+            log_failure(message)
             print(f"Failed to copy {filename}: {e}")
 
     conn.close()
